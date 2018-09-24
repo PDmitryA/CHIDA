@@ -50,9 +50,6 @@ std::list<int> clients_list;
 std::list<ao_read_file*> serve_files_list;
 std::list<ao_read_file*> next_time_serve_list;
 
-// Message buffer
-char message[BUF_SIZE];
-
 // for debug mode
 int DEBUG_MODE = 0;
 
