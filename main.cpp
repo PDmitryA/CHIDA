@@ -57,18 +57,18 @@ char message[BUF_SIZE];
 int DEBUG_MODE = 0;
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
+    if (argc < 2) {
         std::cerr << "usage: epoll web server need more arguments" << std::endl;
         return 1;
     }
     if (argc > 2) {
         DEBUG_MODE = 1;
-        std::cout << "DEBUG MODE IS ON" << std::endl;
-        std::cout << "MAIN: argc=" << argc << " argv=";
+        std::cerr << "DEBUG MODE IS ON" << std::endl;
+        std::cerr << "MAIN: argc=" << argc << " argv=";
         for(int i = 0; i < argc; i++) {
-            std::cout << argv[i] << " ";
+            std::cerr << argv[i] << " ";
         }
-        std::cout << std::endl;
+        std::cerr << std::endl;
     }
 
     int listener;
@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
             if (events[i].data.fd == listener) {
                 CHK2(client, accept(listener, (struct sockaddr *) &their_addr, &socklen));
                 if (DEBUG_MODE) {
-                    std::cout <<
+                    std::cerr <<
                         "connection from:" <<
                         inet_ntoa(their_addr.sin_addr) <<
                         ":" <<
@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
                 // save new descriptor to further use
                 clients_list.push_back(client); // add new connection to list of clients
                 if (DEBUG_MODE) {
-                    std::cout <<
+                    std::cerr <<
                     "Add new client(fd = " <<
                     client <<
                     ") to epoll and now clients_list.size = " <<
@@ -186,12 +186,26 @@ int main(int argc, char *argv[]) {
             __ssize_t numBytes = aio_return(ao_serve_files->cb);
             if (numBytes != -1) {
                 char* buffer = (char*) ao_serve_files->cb->aio_buf;
-                for (int sent = 0; sent < numBytes; sent += send(
+                /*for (int sent = 0; sent < numBytes; sent += send(
                         ao_serve_files->epoll_client_fd,
                         buffer+sent,
                         (size_t)(numBytes - sent),
                         0)
-                                );
+                                );*/
+                if(send(ao_serve_files->epoll_client_fd,
+                        buffer,
+                        (size_t)(numBytes),
+                        MSG_NOSIGNAL) == -1) {
+                    delete[] buffer;
+                    clients_list.remove(ao_serve_files->epoll_client_fd);
+                    CHK(close(ao_serve_files->cb->aio_fildes));
+                    CHK(close(ao_serve_files->epoll_client_fd));
+                    if (DEBUG_MODE) {
+                        std::cerr << "Client with fd:" <<
+                                  ao_serve_files->epoll_client_fd << " closed! And now clients_list.size = " <<
+                                  clients_list.size() << std::endl;
+                    }
+                };
 
                 // add new task if it is not the end of file
                 auto read_continue = new ao_read_file();
@@ -201,13 +215,13 @@ int main(int argc, char *argv[]) {
                 memset(buffer, 0, SIZE_TO_READ);
                 read_continue->cb->aio_buf = buffer;
                 if (ao_serve_files->fileSize < read_continue->cb->aio_offset || aio_read(read_continue->cb) == -1) {
-                    close(read_continue->cb->aio_fildes);
-                    CHK(close(read_continue->epoll_client_fd));
-                    clients_list.remove(read_continue->epoll_client_fd);
+                    clients_list.remove(ao_serve_files->epoll_client_fd);
+                    CHK(close(ao_serve_files->cb->aio_fildes));
+                    CHK(close(ao_serve_files->epoll_client_fd));
                     if (DEBUG_MODE) {
-                        std::cout << "Client with fd:" <<
-                                  read_continue->epoll_client_fd << " closed! And now clients_list.size = " <<
-                                  clients_list.size() << std::endl;
+                        std::cerr << "Client with fd:" <<
+                            ao_serve_files->epoll_client_fd << " closed! And now clients_list.size = " <<
+                            clients_list.size() << std::endl;
                     }
                     delete[] buffer;
                     delete read_continue;
@@ -229,30 +243,37 @@ int main(int argc, char *argv[]) {
 int handle_message(int client) {
     // get row message from client(buf)
     //     and format message to populate(message)
-    char buf[BUF_SIZE], message[BUF_SIZE];
+    char buf[BUF_SIZE];
     bzero(buf, BUF_SIZE);
-    bzero(message, BUF_SIZE);
 
     // to keep different results
     int len;
 
     // try to get new raw message from client
     if (DEBUG_MODE) {
-        std::cout << "Try to read from fd(" << client << ")" << std::endl;
+        std::cerr << "Try to read from fd(" << client << ")" << std::endl;
     }
     CHK2(len, recv(client, buf, BUF_SIZE, 0));
-
+    if (DEBUG_MODE) {
+        std::cerr << "recv" << std::endl;
+    }
     // zero size of len mean the client closed connection
     if (len == 0) {
         CHK(close(client));
         clients_list.remove(client);
         if (DEBUG_MODE) {
-            std::cout << "Client with fd:" <<
+            std::cerr << "Client with fd:" <<
             client << " closed! And now clients_list.size = " <<
             clients_list.size() << std::endl;
         }
     } else {
+        if(DEBUG_MODE) {
+            std::cerr << "parse clientRequest" << std::endl;
+        }
         HttpParser* clientRequest = new HttpParser(std::string(buf));
+        if(DEBUG_MODE) {
+            std::cerr << "HttpParser created and client fd(" << client << ") parsed" << std::endl;
+        }
         bool to_close = false;
 
         std::string responseStr;
@@ -308,6 +329,13 @@ int handle_message(int client) {
                             close(file);
                             delete[] buffer;
                             delete read_start;
+                            responseStr = HttpParser::create_response(
+                                    "CHIDA",
+                                    "HTTP/1.1",
+                                    "500 Server Error",
+                                    "close"
+                            );
+                            to_close = true;
                         } else {
                             struct stat file_stat{};
                             fstat(file, &file_stat);
@@ -387,12 +415,13 @@ int handle_message(int client) {
             CHK(close(client));
             clients_list.remove(client);
             if (DEBUG_MODE) {
-                std::cout << "Client with fd:" <<
+                std::cerr << "Client with fd:" <<
                           client << " closed! And now clients_list.size = " <<
                           clients_list.size() << std::endl;
             }
         }
         delete[] response;
+        delete clientRequest;
     }
 
     return len;
