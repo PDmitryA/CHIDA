@@ -1,16 +1,16 @@
-#include<stdlib.h>
-#include<stdio.h>
-#include<sys/types.h>
-#include<sys/socket.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <arpa/inet.h>
-#include<fcntl.h>
-#include<sys/stat.h>
-#include<netdb.h>
-#include<string.h>
-#include<sys/sendfile.h>
-#include<sys/epoll.h>
-#include<unistd.h>
-#include<errno.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <netdb.h>
+#include <string.h>
+#include <sys/sendfile.h>
+#include <sys/epoll.h>
+#include <unistd.h>
+#include <errno.h>
 #include <iostream>
 #include <list>
 #include <cstring>
@@ -183,12 +183,6 @@ int main(int argc, char *argv[]) {
             __ssize_t numBytes = aio_return(ao_serve_files->cb);
             if (numBytes != -1) {
                 char* buffer = (char*) ao_serve_files->cb->aio_buf;
-                /*for (int sent = 0; sent < numBytes; sent += send(
-                        ao_serve_files->epoll_client_fd,
-                        buffer+sent,
-                        (size_t)(numBytes - sent),
-                        0)
-                                );*/
                 if(send(ao_serve_files->epoll_client_fd,
                         buffer,
                         (size_t)(numBytes),
@@ -304,13 +298,24 @@ int handle_message(int client) {
                 } else {
                     int file = open(dir.c_str(), O_RDONLY, 0);
                     if (file == -1) {
-                        responseStr = HttpParser::create_response(
-                                "CHIDA",
-                                "HTTP/1.1",
-                                "404 Not Found",
-                                "close"
-                        );
-                        to_close = true;
+                        std::string path = clientRequest->get_path();
+                        if (path[path.length() - 1] == '/') {
+                            responseStr = HttpParser::create_response(
+                                    "CHIDA",
+                                    "HTTP/1.1",
+                                    "403 Forbidden",
+                                    "close"
+                            );
+                            to_close = true;
+                        } else {
+                            responseStr = HttpParser::create_response(
+                                    "CHIDA",
+                                    "HTTP/1.1",
+                                    "404 Not Found",
+                                    "close"
+                            );
+                            to_close = true;
+                        }
                     } else {
                         char* buffer = new char[SIZE_TO_READ];
                         memset(buffer, 0, strlen(buffer));
@@ -404,7 +409,6 @@ int handle_message(int client) {
                       << "PATH: " << clientRequest->get_path() << '\n'
                       << "QUERY: " << clientRequest->get_query() << '\n';
         }
-        std::cerr << responseStr << '\n';
         char* response = new char[responseStr.length() + 1];
         std::strcpy(response, responseStr.c_str());
         for (int sent = 0; sent < strlen(response); sent += send(client, response+sent, strlen(response)-sent, 0));
