@@ -179,13 +179,10 @@ int main(int argc, char *argv[]) {
         std::swap(next_time_serve_list, serve_files_list);
         for (auto &ao_serve_files : serve_files_list) {
             if (aio_error(ao_serve_files->cb) == EINPROGRESS) {
-                std::cerr << "just wait\n";
                 next_time_serve_list.push_back(&(*ao_serve_files));
                 continue;
             }
 
-            std::cerr << "SPAM\n";
-            std::cerr << "another one string\n";
             __ssize_t numBytes = aio_return(ao_serve_files->cb);
             if (numBytes != -1) {
                 char* buffer = (char*) ao_serve_files->cb->aio_buf;
@@ -205,6 +202,13 @@ int main(int argc, char *argv[]) {
                 read_continue->cb->aio_buf = buffer;
                 if (ao_serve_files->fileSize < read_continue->cb->aio_offset || aio_read(read_continue->cb) == -1) {
                     close(read_continue->cb->aio_fildes);
+                    CHK(close(read_continue->epoll_client_fd));
+                    clients_list.remove(read_continue->epoll_client_fd);
+                    if (DEBUG_MODE) {
+                        std::cout << "Client with fd:" <<
+                                  read_continue->epoll_client_fd << " closed! And now clients_list.size = " <<
+                                  clients_list.size() << std::endl;
+                    }
                     delete[] buffer;
                     delete read_continue;
                 } else {
@@ -249,53 +253,102 @@ int handle_message(int client) {
         }
     } else {
         HttpParser* clientRequest = new HttpParser(std::string(buf));
+        bool to_close = false;
 
         std::string responseStr;
 
-        std::string dir = get_current_dir_name();
-        dir += clientRequest->get_path();
-        if (dir[dir.length() - 1] == '/') {
-            dir += "index.html";
-        }
+        if (clientRequest->is_bad_query()) {
+            responseStr = HttpParser::create_response(
+                    "CHIDA",
+                    "HTTP/1.1",
+                    "400 Bad Request",
+                    "close"
+            );
+            to_close = true;
+        } else {
 
-        if (clientRequest->get_method() == "GET") {
+            std::string dir = get_current_dir_name();
+            dir += clientRequest->get_path();
+            if (dir[dir.length() - 1] == '/') {
+                dir += "index.html";
+            }
 
-            if (dir.find("..") != std::string::npos) {
-                responseStr = HttpParser::create_response(
-                        "CHIDA",
-                        "HTTP/1.1",
-                        "403 Forbidden",
-                        "close"
-                );
-            } else {
-                int file = open(dir.c_str(), O_RDONLY, 0);
-                if (file == -1) {
+            if (clientRequest->get_method() == "GET") {
+
+                if (dir.find("../") != std::string::npos) {
                     responseStr = HttpParser::create_response(
                             "CHIDA",
                             "HTTP/1.1",
-                            "404 Not Found",
+                            "403 Forbidden",
                             "close"
                     );
+                    to_close = true;
                 } else {
-                    char* buffer = new char[SIZE_TO_READ];
-                    memset(buffer, 0, strlen(buffer));
-                    // create the control block structure
-                    auto read_start = new ao_read_file();
-                    read_start->epoll_client_fd = client;
-                    read_start->cb->aio_nbytes = SIZE_TO_READ;
-                    read_start->cb->aio_fildes = file;
-                    read_start->cb->aio_offset = 0;
-                    read_start->cb->aio_buf = buffer;
-                    // read!
-                    if (aio_read(read_start->cb) == -1) {
-                        close(file);
-                        delete[] buffer;
-                        delete read_start;
+                    int file = open(dir.c_str(), O_RDONLY, 0);
+                    if (file == -1) {
+                        responseStr = HttpParser::create_response(
+                                "CHIDA",
+                                "HTTP/1.1",
+                                "404 Not Found",
+                                "close"
+                        );
+                        to_close = true;
+                    } else {
+                        char* buffer = new char[SIZE_TO_READ];
+                        memset(buffer, 0, strlen(buffer));
+                        // create the control block structure
+                        auto read_start = new ao_read_file();
+                        read_start->epoll_client_fd = client;
+                        read_start->cb->aio_nbytes = SIZE_TO_READ;
+                        read_start->cb->aio_fildes = file;
+                        read_start->cb->aio_offset = 0;
+                        read_start->cb->aio_buf = buffer;
+                        // read!
+                        if (aio_read(read_start->cb) == -1) {
+                            close(file);
+                            delete[] buffer;
+                            delete read_start;
+                        } else {
+                            struct stat file_stat{};
+                            fstat(file, &file_stat);
+                            read_start->fileSize = file_stat.st_size;
+                            next_time_serve_list.push_back(read_start);
+
+                            auto mime = MimeType::Instance();
+                            responseStr = HttpParser::create_response(
+                                    "CHIDA",
+                                    "HTTP/1.1",
+                                    "200 OK",
+                                    "close",
+                                    "",
+                                    mime->get_mime_type(dir),
+                                    std::to_string(file_stat.st_size)
+                            );
+                        }
+                    }
+                }
+            } else if (clientRequest->get_method() == "HEAD") {
+                if (dir.find("../") != std::string::npos) {
+                    responseStr = HttpParser::create_response(
+                            "CHIDA",
+                            "HTTP/1.1",
+                            "403 Forbidden",
+                            "close"
+                    );
+                    to_close = true;
+                } else {
+                    int file = open(dir.c_str(), O_RDONLY, 0);
+                    if (file == -1) {
+                        responseStr = HttpParser::create_response(
+                                "CHIDA",
+                                "HTTP/1.1",
+                                "404 Not Found",
+                                "close"
+                        );
+                        to_close = true;
                     } else {
                         struct stat file_stat{};
                         fstat(file, &file_stat);
-                        read_start->fileSize = file_stat.st_size;
-                        next_time_serve_list.push_back(read_start);
 
                         auto mime = MimeType::Instance();
                         responseStr = HttpParser::create_response(
@@ -307,47 +360,20 @@ int handle_message(int client) {
                                 mime->get_mime_type(dir),
                                 std::to_string(file_stat.st_size)
                         );
+                        to_close = true;
                     }
                 }
-            }
-        } else if (clientRequest->get_method() == "HEAD") {
-            if (dir.find("..") != std::string::npos) {
+            } else {
+                // not allowed method
                 responseStr = HttpParser::create_response(
                         "CHIDA",
                         "HTTP/1.1",
-                        "403 Forbidden",
+                        "405 Method Not Allowed",
                         "close"
                 );
-            } else {
-                int file = open(dir.c_str(), O_RDONLY, 0);
-                if (file == -1) {
-                    responseStr = HttpParser::create_response(
-                            "CHIDA",
-                            "HTTP/1.1",
-                            "404 Not Found",
-                            "close"
-                    );
-                } else {
-                    auto mime = MimeType::Instance();
-                    responseStr = HttpParser::create_response(
-                            "CHIDA",
-                            "HTTP/1.1",
-                            "200 OK",
-                            "close",
-                            "",
-                            mime->get_mime_type(dir)
-                    );
-                }
-            }
-        } else {
-            // not allowed method
-            responseStr = HttpParser::create_response(
-                    "CHIDA",
-                    "HTTP/1.1",
-                    "405 Method Not Allowed",
-                    "close"
-            );
-        };
+                to_close = true;
+            };
+        }
         if (DEBUG_MODE) {
             std::cerr << "METHOD: " << clientRequest->get_method() << '\n'
                       << "PATH: " << clientRequest->get_path() << '\n'
@@ -357,6 +383,15 @@ int handle_message(int client) {
         char* response = new char[responseStr.length() + 1];
         std::strcpy(response, responseStr.c_str());
         for (int sent = 0; sent < strlen(response); sent += send(client, response+sent, strlen(response)-sent, 0));
+        if (to_close) {
+            CHK(close(client));
+            clients_list.remove(client);
+            if (DEBUG_MODE) {
+                std::cout << "Client with fd:" <<
+                          client << " closed! And now clients_list.size = " <<
+                          clients_list.size() << std::endl;
+            }
+        }
         delete[] response;
     }
 

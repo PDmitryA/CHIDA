@@ -12,8 +12,11 @@ class HttpParser {
 private:
     std::string method, path, query;
     std::string urldecode();
+    bool bad_query;
 public:
     HttpParser(const std::string& text);
+
+    bool is_bad_query() const;
 
     std::string get_method() const;
 

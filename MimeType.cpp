@@ -28,6 +28,9 @@ MimeType* MimeType::Instance() {
 
 std::string MimeType::get_mime_type(const std::string& path) {
     auto start_extension = path.find_last_of('.');
+    if (start_extension == std::string::npos) {
+        return "text/plain";
+    }
     auto iter = types.find(path.substr(start_extension));
     if (iter == types.end()) {
         return "text/plain";

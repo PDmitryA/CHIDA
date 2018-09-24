@@ -9,8 +9,17 @@ HttpParser::HttpParser(const std::string& text) {
     unsigned long start_of_path = text.find(' ', 0);
     unsigned long start_of_query = text.find('?', start_of_path + 1);
     unsigned long end_of_query = text.find(' ', start_of_path + 1);
+    bad_query = false;
     if (start_of_query == std::string::npos) {
         start_of_query = end_of_query;
+    }
+
+    if (start_of_path == std::string::npos || end_of_query == std::string::npos) {
+        bad_query = true;
+        method = "";
+        path = "";
+        query = "";
+        return;
     }
 
     method = text.substr(0, start_of_path);
@@ -102,4 +111,8 @@ std::string HttpParser::urldecode() {
     }
     swap(path, out);
     return out;
+}
+
+bool HttpParser::is_bad_query() const {
+    return this->bad_query;
 }
