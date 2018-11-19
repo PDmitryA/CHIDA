@@ -24,6 +24,10 @@ int main(int argc, char *argv[]) {
 
     std::cout << config.port << ' ' << config.path << ' ' << config.thread << std::endl;
 
+    if (!config.port) {
+        config.port = 80;
+    }
+
     auto * server = new Server(config.port, DEBUG_MODE, config.thread, config.path);
     server->start();
 }
