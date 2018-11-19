@@ -25,7 +25,12 @@ std::string Server::create_response(const std::string& status,
     );
 }
 
-bool Server::handle_get(int client, HttpParser const* clientRequest, std::string const& dir, std::string& responseStr) {
+bool Server::handle_get(
+    int client,
+    HttpParser const* clientRequest,
+    std::string const& dir,
+    std::string& responseStr,
+    ao_read_file*& read_start_push) {
     bool to_close = false;
     if (dir.find("../") != std::string::npos) {
         responseStr = this->create_response("403 Forbidden");
@@ -65,7 +70,7 @@ bool Server::handle_get(int client, HttpParser const* clientRequest, std::string
                 if (DEBUG_MODE) {
                     std::cerr << "START PUSH READ_START" << std::endl;
                 }
-                this->client_queue.push(read_start);
+                read_start_push = read_start;
                 if (DEBUG_MODE) {
                     std::cerr << "PUSHED READ_START" << std::endl;
                 }
@@ -143,6 +148,7 @@ int Server::handle_client(int client) {
 
         bool to_close = false;
         std::string responseStr;
+        ao_read_file* read_file_push = nullptr;
 
         if (clientRequest->is_bad_query()) {
             responseStr = this->create_response("400 Bad Request");
@@ -156,7 +162,7 @@ int Server::handle_client(int client) {
             }
 
             if (clientRequest->get_method() == "GET") {
-                to_close = this->handle_get(client, clientRequest, dir, responseStr);
+                to_close = this->handle_get(client, clientRequest, dir, responseStr, read_file_push);
             } else if (clientRequest->get_method() == "HEAD") {
                 to_close = this->handle_head(client, clientRequest, dir, responseStr);
             } else {
@@ -180,6 +186,9 @@ int Server::handle_client(int client) {
                 std::cerr << "Client with fd:" <<
                           client << " closed!" << std::endl;
             }
+        }
+        if (read_file_push) {
+            this->client_queue.push(read_file_push);
         }
         delete[] response;
         delete clientRequest;

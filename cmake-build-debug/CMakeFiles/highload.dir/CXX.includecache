@@ -108,6 +108,16 @@ aio.h
 
 /home/pda/proj/highload/declare.h
 
+/home/pda/proj/highload/main.cpp
+stdlib.h
+-
+stdio.h
+-
+declare.h
+/home/pda/proj/highload/declare.h
+Server.h
+/home/pda/proj/highload/Server.h
+
 /home/pda/proj/highload/queue.cpp
 queue
 -

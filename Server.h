@@ -56,7 +56,8 @@ class Server {
             int client,
             HttpParser const* clientRequest,
             std::string const& dir,
-            std::string& responseStr);
+            std::string& responseStr,
+            ao_read_file*& read_file_push);
 
     bool handle_head(
             int client,
