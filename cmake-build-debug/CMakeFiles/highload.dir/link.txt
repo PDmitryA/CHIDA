@@ -1,0 +1,1 @@
+/usr/bin/c++  -lrt -lpthread -g   CMakeFiles/highload.dir/main.cpp.o CMakeFiles/highload.dir/HttpParser.cpp.o CMakeFiles/highload.dir/MimeType.cpp.o CMakeFiles/highload.dir/Server.cpp.o CMakeFiles/highload.dir/aoReadFile.cpp.o CMakeFiles/highload.dir/List/ListNode.cpp.o CMakeFiles/highload.dir/List/ConcurrentList.cpp.o  -o highload -lrt -lpthread 

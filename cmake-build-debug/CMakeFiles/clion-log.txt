@@ -1,0 +1,4 @@
+/etc/jetBrains/CLion/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/pda/proj/highload
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/pda/proj/highload/cmake-build-debug
