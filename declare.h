@@ -1,8 +1,7 @@
 #ifndef HIGHLOAD_DECLARE_H
 #define HIGHLOAD_DECLARE_H
 
-#define SERVER_PORT 3567
-#define SERVER_HOST "127.0.0.1"
+#define SERVER_HOST "0.0.0.0"
 #define EPOLL_SIZE 10000
 #define EPOLL_RUN_TIMEOUT -1
 #define BUF_SIZE 1024
