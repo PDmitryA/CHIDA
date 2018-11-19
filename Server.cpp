@@ -4,7 +4,12 @@
 
 #include "Server.h"
 
-Server::Server(int port, bool debug): port(port), DEBUG_MODE(debug) {}
+Server::Server(int port, bool debug, int thread_count, char* path):
+    port(port),
+    DEBUG_MODE(debug),
+    thread_count(thread_count),
+    path(path)
+{}
 
 std::string Server::create_response(const std::string& status,
                                    const std::string& content,
@@ -155,7 +160,7 @@ int Server::handle_client(int client) {
             to_close = true;
         } else {
 
-            std::string dir = get_current_dir_name();
+            std::string dir = this->path;
             dir += clientRequest->get_path();
             if (dir[dir.length() - 1] == '/') {
                 dir += "index.html";
@@ -264,18 +269,20 @@ void* Server::handle_file(void* to_pthread_void) {
 }
 
 void Server::serve_files() {
-    pthread_t thread;
     auto * to_pthread_struct = new to_pthread();
     to_pthread_struct->clients_list = &this->clients_list;
     to_pthread_struct->debug = DEBUG_MODE;
     to_pthread_struct->client_queue = &this->client_queue;
 
-    if (pthread_create(&thread, nullptr, Server::handle_file, (void*)to_pthread_struct) != 0) {
-        std::cerr << "Couldn`t create thread" << std::endl;
-        return;
-    }
-    if (DEBUG_MODE) {
-        std::cerr << "Thread created!" << std::endl;
+    for(int i = 0; i < this->thread_count; i++) {
+        pthread_t thread;
+        if (pthread_create(&thread, nullptr, Server::handle_file, (void *) to_pthread_struct) != 0) {
+            std::cerr << "Couldn`t create thread" << std::endl;
+            return;
+        }
+        if (DEBUG_MODE) {
+            std::cerr << "Thread created!" << std::endl;
+        }
     }
 }
 
@@ -290,7 +297,10 @@ int Server::start() {
     struct sockaddr_in addr = {}, their_addr = {};
     //     configure ip & port for listen
     addr.sin_family = PF_INET;
-    addr.sin_port = htons(SERVER_PORT);
+    if (DEBUG_MODE) {
+        std::cerr << "port: " << (uint16_t)this->port << std::endl;
+    }
+    addr.sin_port = htons((uint16_t)this->port);
     CHK(inet_aton(SERVER_HOST, &addr.sin_addr));
 
     //     size of address

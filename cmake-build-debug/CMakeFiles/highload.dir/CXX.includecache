@@ -46,10 +46,6 @@ unordered_map
 string
 -
 
-/home/pda/proj/highload/Server.cpp
-Server.h
-/home/pda/proj/highload/Server.h
-
 /home/pda/proj/highload/Server.h
 stdlib.h
 -
@@ -117,6 +113,16 @@ declare.h
 /home/pda/proj/highload/declare.h
 Server.h
 /home/pda/proj/highload/Server.h
+parse/parse_config.c
+/home/pda/proj/highload/parse/parse_config.c
+
+/home/pda/proj/highload/parse/parse_config.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
 
 /home/pda/proj/highload/queue.cpp
 queue

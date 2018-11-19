@@ -1,0 +1,3 @@
+/home/pda/proj/highload/CMakeFiles/rebuild_cache.dir
+/home/pda/proj/highload/CMakeFiles/edit_cache.dir
+/home/pda/proj/highload/CMakeFiles/highload.dir

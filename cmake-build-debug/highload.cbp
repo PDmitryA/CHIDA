@@ -117,6 +117,9 @@
 		<Unit filename="/home/pda/proj/highload/main.cpp">
 			<Option target="highload"/>
 		</Unit>
+		<Unit filename="/home/pda/proj/highload/parse/parse_config.c">
+			<Option target="highload"/>
+		</Unit>
 		<Unit filename="/home/pda/proj/highload/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

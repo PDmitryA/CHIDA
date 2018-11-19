@@ -40,6 +40,8 @@ class Server {
 
     ConcurrentList<int> clients_list;
     int port;
+    int thread_count;
+    char* path;
     bool DEBUG_MODE;
     Queue<ao_read_file*> client_queue;
     std::list<pthread_t*> serve_files_thread_list;
@@ -71,7 +73,7 @@ class Server {
 
 
 public:
-    Server(int port, bool debug);
+    Server(int port, bool debug, int thread_count, char* path);
     int start();
 };
 

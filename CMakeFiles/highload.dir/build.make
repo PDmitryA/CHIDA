@@ -46,7 +46,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /home/pda/proj/highload
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pda/proj/highload/cmake-build-debug
+CMAKE_BINARY_DIR = /home/pda/proj/highload
 
 # Include any dependencies generated for this target.
 include CMakeFiles/highload.dir/depend.make
@@ -58,8 +58,8 @@ include CMakeFiles/highload.dir/progress.make
 include CMakeFiles/highload.dir/flags.make
 
 CMakeFiles/highload.dir/main.cpp.o: CMakeFiles/highload.dir/flags.make
-CMakeFiles/highload.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/highload.dir/main.cpp.o"
+CMakeFiles/highload.dir/main.cpp.o: main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/highload.dir/main.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/highload.dir/main.cpp.o -c /home/pda/proj/highload/main.cpp
 
 CMakeFiles/highload.dir/main.cpp.i: cmake_force
@@ -71,8 +71,8 @@ CMakeFiles/highload.dir/main.cpp.s: cmake_force
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pda/proj/highload/main.cpp -o CMakeFiles/highload.dir/main.cpp.s
 
 CMakeFiles/highload.dir/HttpParser.cpp.o: CMakeFiles/highload.dir/flags.make
-CMakeFiles/highload.dir/HttpParser.cpp.o: ../HttpParser.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/highload.dir/HttpParser.cpp.o"
+CMakeFiles/highload.dir/HttpParser.cpp.o: HttpParser.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/highload.dir/HttpParser.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/highload.dir/HttpParser.cpp.o -c /home/pda/proj/highload/HttpParser.cpp
 
 CMakeFiles/highload.dir/HttpParser.cpp.i: cmake_force
@@ -84,8 +84,8 @@ CMakeFiles/highload.dir/HttpParser.cpp.s: cmake_force
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pda/proj/highload/HttpParser.cpp -o CMakeFiles/highload.dir/HttpParser.cpp.s
 
 CMakeFiles/highload.dir/MimeType.cpp.o: CMakeFiles/highload.dir/flags.make
-CMakeFiles/highload.dir/MimeType.cpp.o: ../MimeType.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/highload.dir/MimeType.cpp.o"
+CMakeFiles/highload.dir/MimeType.cpp.o: MimeType.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/highload.dir/MimeType.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/highload.dir/MimeType.cpp.o -c /home/pda/proj/highload/MimeType.cpp
 
 CMakeFiles/highload.dir/MimeType.cpp.i: cmake_force
@@ -97,8 +97,8 @@ CMakeFiles/highload.dir/MimeType.cpp.s: cmake_force
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pda/proj/highload/MimeType.cpp -o CMakeFiles/highload.dir/MimeType.cpp.s
 
 CMakeFiles/highload.dir/Server.cpp.o: CMakeFiles/highload.dir/flags.make
-CMakeFiles/highload.dir/Server.cpp.o: ../Server.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/highload.dir/Server.cpp.o"
+CMakeFiles/highload.dir/Server.cpp.o: Server.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/highload.dir/Server.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/highload.dir/Server.cpp.o -c /home/pda/proj/highload/Server.cpp
 
 CMakeFiles/highload.dir/Server.cpp.i: cmake_force
@@ -110,8 +110,8 @@ CMakeFiles/highload.dir/Server.cpp.s: cmake_force
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pda/proj/highload/Server.cpp -o CMakeFiles/highload.dir/Server.cpp.s
 
 CMakeFiles/highload.dir/aoReadFile.cpp.o: CMakeFiles/highload.dir/flags.make
-CMakeFiles/highload.dir/aoReadFile.cpp.o: ../aoReadFile.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/highload.dir/aoReadFile.cpp.o"
+CMakeFiles/highload.dir/aoReadFile.cpp.o: aoReadFile.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/highload.dir/aoReadFile.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/highload.dir/aoReadFile.cpp.o -c /home/pda/proj/highload/aoReadFile.cpp
 
 CMakeFiles/highload.dir/aoReadFile.cpp.i: cmake_force
@@ -123,8 +123,8 @@ CMakeFiles/highload.dir/aoReadFile.cpp.s: cmake_force
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pda/proj/highload/aoReadFile.cpp -o CMakeFiles/highload.dir/aoReadFile.cpp.s
 
 CMakeFiles/highload.dir/List/ListNode.cpp.o: CMakeFiles/highload.dir/flags.make
-CMakeFiles/highload.dir/List/ListNode.cpp.o: ../List/ListNode.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/highload.dir/List/ListNode.cpp.o"
+CMakeFiles/highload.dir/List/ListNode.cpp.o: List/ListNode.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/highload.dir/List/ListNode.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/highload.dir/List/ListNode.cpp.o -c /home/pda/proj/highload/List/ListNode.cpp
 
 CMakeFiles/highload.dir/List/ListNode.cpp.i: cmake_force
@@ -136,8 +136,8 @@ CMakeFiles/highload.dir/List/ListNode.cpp.s: cmake_force
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pda/proj/highload/List/ListNode.cpp -o CMakeFiles/highload.dir/List/ListNode.cpp.s
 
 CMakeFiles/highload.dir/List/ConcurrentList.cpp.o: CMakeFiles/highload.dir/flags.make
-CMakeFiles/highload.dir/List/ConcurrentList.cpp.o: ../List/ConcurrentList.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/highload.dir/List/ConcurrentList.cpp.o"
+CMakeFiles/highload.dir/List/ConcurrentList.cpp.o: List/ConcurrentList.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/highload.dir/List/ConcurrentList.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/highload.dir/List/ConcurrentList.cpp.o -c /home/pda/proj/highload/List/ConcurrentList.cpp
 
 CMakeFiles/highload.dir/List/ConcurrentList.cpp.i: cmake_force
@@ -149,8 +149,8 @@ CMakeFiles/highload.dir/List/ConcurrentList.cpp.s: cmake_force
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pda/proj/highload/List/ConcurrentList.cpp -o CMakeFiles/highload.dir/List/ConcurrentList.cpp.s
 
 CMakeFiles/highload.dir/parse/parse_config.c.o: CMakeFiles/highload.dir/flags.make
-CMakeFiles/highload.dir/parse/parse_config.c.o: ../parse/parse_config.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/highload.dir/parse/parse_config.c.o"
+CMakeFiles/highload.dir/parse/parse_config.c.o: parse/parse_config.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pda/proj/highload/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/highload.dir/parse/parse_config.c.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/highload.dir/parse/parse_config.c.o   -c /home/pda/proj/highload/parse/parse_config.c
 
 CMakeFiles/highload.dir/parse/parse_config.c.i: cmake_force
@@ -185,7 +185,7 @@ highload: CMakeFiles/highload.dir/List/ConcurrentList.cpp.o
 highload: CMakeFiles/highload.dir/parse/parse_config.c.o
 highload: CMakeFiles/highload.dir/build.make
 highload: CMakeFiles/highload.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pda/proj/highload/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable highload"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pda/proj/highload/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable highload"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/highload.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -198,6 +198,6 @@ CMakeFiles/highload.dir/clean:
 .PHONY : CMakeFiles/highload.dir/clean
 
 CMakeFiles/highload.dir/depend:
-	cd /home/pda/proj/highload/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pda/proj/highload /home/pda/proj/highload /home/pda/proj/highload/cmake-build-debug /home/pda/proj/highload/cmake-build-debug /home/pda/proj/highload/cmake-build-debug/CMakeFiles/highload.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/pda/proj/highload && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pda/proj/highload /home/pda/proj/highload /home/pda/proj/highload /home/pda/proj/highload /home/pda/proj/highload/CMakeFiles/highload.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/highload.dir/depend
 
